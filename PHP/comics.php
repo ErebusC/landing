@@ -15,7 +15,7 @@
     	static function comic_list(){
 
     		$cwd = getcwd();
-    		
+
     		//Folders to exclude (monster is temporary, it was causing other issues)
     		$exclude = [$cwd . '/Monster', $cwd . '/comic_image'];
 
@@ -31,17 +31,18 @@
             	$comic = preg_replace("(_)", " ", $filename);
 
             	$upper_case = ucwords($comic);
-		
-		$obj = new Comics();
-            	//checks if a thumbnail doesn't alaready exist. If it doesn't it runs functions to appropriately create one
+
+			$obj = new Comics();
+            	//checks if a thumbnail doesn't already exist. If it doesn't it runs functions to appropriately create one
             	if(!file_exists("../comics/comic_image/" . $filename . ".webp")) {
                		$obj->im_cr($filename, Comics::first_im($filename));
         		}
 
         		else {
-        			echo "<div class='comic'>" . "<a href='" . 'reader.php?comic=' . $filename . "&vol='>";
-        			echo "<img src='../comics/comic_image/" . $filename . ".webp'/>";
-            		echo "<br>" . $upper_case . "</a>"  . "</div>\r\n";
+        			echo "<a class='comic-card' href='reader.php?comic=" . $filename . "&vol='>";
+        			echo "<img class='comic-card__cover' src='../comics/comic_image/" . $filename . ".webp' alt='" . htmlspecialchars($upper_case) . "'/>";
+            		echo "<div class='comic-card__title'>" . htmlspecialchars($upper_case) . "</div>";
+        			echo "</a>\n";
         		}
         	}
     	}
@@ -54,11 +55,11 @@
 
     		//For every filename in the array
     		for ($i = 0; $i < sizeOf($filename); $i++) {
-    	    
+
     	    	$dir = $cwd . '/' . $filename[$i] . "/";
- 			
+
  				$all_dirs = glob($dir . '*');
- 			
+
  				//Foreach function to fill the array with all directories for the comic
  				//This is so we can grab only the very first volume for each comic
  				foreach ($all_dirs as $file) {
@@ -79,7 +80,7 @@
     		$file_info = pathinfo($image, PATHINFO_EXTENSION);
     		$dir_im = 'null';
     		ob_start();
-		
+
             //Checks file extension to decide which imagecreate function is required
            switch ($file_info) {
     			case 'webp':
@@ -106,7 +107,7 @@
         	imagedestroy($manipulated);
         }
 
-        //Function to handle iamge manipulation
+        //Function to handle image manipulation
         function im_man($image, $dir_im){
             //Gets the size of the image
             $image_size = getimagesize($image);
@@ -114,23 +115,23 @@
             //Checks which cropping template to use
             if ($image_size[0] >= 2050) {
                 $cropped = imagecrop($dir_im, ['x' => ($image_size[1]/2),
-                                                'y' =>0, 
-                                                'width' =>  ($image_size[0] / 3), 
+                                                'y' =>0,
+                                                'width' =>  ($image_size[0] / 3),
                                                 'height' => ($image_size[1] /1.5)]);
 
-                //Scales the imgage to an appropriate size to use as a thumbnail
+                //Scales the image to an appropriate size to use as a thumbnail
                 $scaled = imagescale($cropped, 300);
             }
             else{
                 $cropped = imagecrop($dir_im, ['x' => ($image_size[1]/17),
-                                                'y' =>0, 
-                                                'width' =>  (($image_size[0] / 3)*2.5), 
+                                                'y' =>0,
+                                                'width' =>  (($image_size[0] / 3)*2.5),
                                                 'height' => ($image_size[1] /2)]);
 
-                //Scales the imgage to an appropriate size to use as a thumbnail
+                //Scales the image to an appropriate size to use as a thumbnail
                 $scaled = imagescale($cropped, 280);
             }
-                  	
+
         	return $scaled;
         }
 
@@ -139,7 +140,7 @@
 
             $glob_in = Comics::glob_it(getcwd());
 
-       		for ($i=0; $i < count($glob_in); $i++) { 
+       		for ($i=0; $i < count($glob_in); $i++) {
          		if(isset($get) == basename($glob_in[$i])) {
 					$_SESSION['comic'] = $get;
 					return $_SESSION['comic'];
@@ -149,12 +150,12 @@
 
         //Dropdown function for different volumes
         static function vol_dropdown(){
-            
-            //Sets comic directory with the session info            
+
+            //Sets comic directory with the session info
             $set_dir = '../comics/' . $_SESSION['comic'];
 
                 foreach (Comics::glob_it($set_dir) as $filename) {
-                    
+
                     $volume = str_replace($set_dir . '/', "", $filename);
 
                     //Address with volume session information
@@ -171,7 +172,7 @@
                 }
         }
 
-        static function page_dropdown(){            
+        static function page_dropdown(){
             $pages = glob(getcwd() . "/" . $_SESSION['comic'] . '/' . $_GET['vol'] . "/*.{jpg,jpeg,png,webp}", GLOB_BRACE);
 
             $_SESSION['page'] = substr($pages[0],29);

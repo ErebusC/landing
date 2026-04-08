@@ -1,0 +1,241 @@
+/* ============================================================
+   MANGA READER — component extensions for erebus.css
+   Load after erebus.css. Manga-specific components only.
+   ============================================================ */
+
+/* Reserve scrollbar gutter on all pages so the nav does not
+   shift horizontally when moving between short and long pages. */
+html {
+  scrollbar-gutter: stable;
+}
+
+/* ------------------------------------------------------------
+   COMIC GRID
+   Responsive thumbnail grid on the comics listing page.
+   ------------------------------------------------------------ */
+
+.comic-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+  gap: var(--space-md);
+}
+
+.comic-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 2px solid var(--accent);
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.15s ease;
+}
+
+.comic-card:hover {
+  border-color: var(--border-mid);
+  border-top-color: var(--accent-dim);
+}
+
+.comic-card__cover {
+  display: block;
+  width: 100%;
+  height: 19rem;
+  object-fit: cover;
+  object-position: top;
+}
+
+.comic-card__title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.125rem;
+  color: var(--text);
+  padding: var(--space-sm) var(--space-md);
+  border-top: 1px solid var(--border);
+  line-height: 1.3;
+}
+
+/* ------------------------------------------------------------
+   READER CONTROLS
+   Volume and page select dropdowns above the comic image.
+   ------------------------------------------------------------ */
+
+.reader__controls {
+  display: flex;
+  gap: var(--space-md);
+  align-items: center;
+  padding: var(--space-md) 0;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+/* Wrapper provides the custom dropdown arrow */
+.reader__select-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.reader__select-wrap::after {
+  content: '▾';
+  position: absolute;
+  right: 0.875rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-dim);
+  font-size: 0.75rem;
+  pointer-events: none;
+  font-family: var(--font-mono);
+}
+
+.reader__select {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  color: var(--text);
+  background: var(--elevated);
+  border: 1px solid var(--border);
+  padding: 0.625rem 2.5rem 0.625rem 1rem;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  min-width: 11rem;
+  transition: border-color 0.15s ease;
+  line-height: 1.4;
+}
+
+.reader__select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.reader__select:hover {
+  border-color: var(--border-mid);
+}
+
+/* ------------------------------------------------------------
+   READER PAGE
+   Comic image display and surrounding layout.
+   ------------------------------------------------------------ */
+
+.reader__page-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-xl) 0;
+  cursor: zoom-in;
+}
+
+.reader__page {
+  max-width: 48rem;
+  width: 100%;
+  height: auto;
+  display: block;
+  border: 1px solid var(--border);
+}
+
+.reader__hint {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  color: var(--text-faint);
+  text-align: center;
+  margin-top: var(--space-md);
+}
+
+/* ------------------------------------------------------------
+   READER MODAL
+   Full-screen zoom view triggered by clicking the comic page.
+   ------------------------------------------------------------ */
+
+.reader__modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(8, 11, 17, 0.96);
+  z-index: 500;
+  align-items: center;
+  justify-content: center;
+}
+
+.reader__modal--open {
+  display: flex;
+}
+
+.reader__modal-close {
+  position: absolute;
+  top: var(--space-md);
+  right: var(--space-lg);
+  font-family: var(--font-mono);
+  font-size: 1.5rem;
+  color: var(--text-dim);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.15s ease;
+  padding: var(--space-sm);
+  line-height: 1;
+}
+
+.reader__modal-close:hover {
+  color: var(--text);
+}
+
+.reader__modal-img {
+  max-width: 90vw;
+  max-height: 90vh;
+  width: auto;
+  height: auto;
+  display: block;
+  border: 1px solid var(--border);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 768px) {
+  .comic-grid {
+    grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+  }
+
+  .comic-card__cover {
+    height: 15rem;
+  }
+
+  .reader__controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .reader__select-wrap {
+    width: 100%;
+  }
+
+  .reader__select {
+    width: 100%;
+  }
+
+  .reader__page {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .comic-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .comic-card__cover {
+    height: 12rem;
+  }
+}
+
+/* ------------------------------------------------------------
+   PRINT — suppress reader chrome
+   ------------------------------------------------------------ */
+
+@media print {
+  .reader__controls,
+  .reader__modal,
+  .reader__hint {
+    display: none;
+  }
+}

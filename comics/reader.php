@@ -1,129 +1,108 @@
 <!DOCTYPE html>
-<html>
-	<head>
-		<title>
-			<?php 
-				include '../PHP/comics.php';
-				session_start();
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+    <?php
+      include '../PHP/comics.php';
+      session_start();
+      $comic_name = Comics::validate_comic($_GET['comic']);
+      echo htmlspecialchars(ucwords(preg_replace("(_)", " ", $comic_name))) . ' — Erebus';
+    ?>
+  </title>
+  <link rel="stylesheet" href="../CSS/erebus.css">
+  <link rel="stylesheet" href="../CSS/nav.css">
+  <link rel="stylesheet" href="../CSS/manga.css">
 
-				$comic_name = Comics::validate_comic($_GET['comic']);
+  <script>
+    // Change page image when the page dropdown changes
+    function displayImage(elem) {
+      var image = document.getElementById('cPage');
+      image.src = elem.value;
+    }
 
-				print_r($comic_name);
-			?>
-		</title>
+    // Open modal on image click
+    function openModal() {
+      var page = document.getElementById('cPage');
+      var modal = document.getElementById('readerModal');
+      var modalImg = document.getElementById('modalImg');
+      modalImg.src = page.src;
+      modal.classList.add('reader__modal--open');
+    }
 
-		<link rel="stylesheet" type="text/css" href="../../CSS/main.css">
-		<link rel="stylesheet" type="text/css" href="../../CSS/reader.css">
-		<link rel="stylesheet" type="text/css" href="../../CSS/nav.css">
+    // Close modal
+    function closeModal() {
+      document.getElementById('readerModal').classList.remove('reader__modal--open');
+    }
 
-		<script type="text/javascript">
+    // Arrow key navigation between pages
+    window.addEventListener('keydown', function(event) {
+      var select = document.getElementById('pageOption');
+      var image = document.getElementById('cPage');
 
-			//Function that changes the image based on the element of the dropdown options 
-			function displayImage(elem) {
-				var image = document.getElementById("cPage");
-				image.src = elem.value;
-			}
+      if (event.key === 'ArrowRight') {
+        select.selectedIndex += 1;
+        image.src = select.value;
+      } else if (event.key === 'ArrowLeft') {
+        select.selectedIndex -= 1;
+        image.src = select.value;
+      } else if (event.key === 'Escape') {
+        closeModal();
+      }
+    }, true);
+  </script>
+</head>
+<body>
 
-			//Creates a modal of the image to allow a magnified view of the comic
-			function magnify() {
-				var modal = document.getElementById("iModal");
-				var img = document.getElementById("cPage");
-				var modalImg = document.getElementById("modalContent");
+  <?php include '../PHP/nav.php'; ?>
 
-				img.onclick =function(){
+  <section class="section" style="padding-top: var(--space-xl);">
+    <div class="container">
+      <p class="eyebrow">// reading</p>
+      <h1 class="heading-display">
+        <?php echo htmlspecialchars(ucwords(preg_replace("(_)", " ", $_SESSION['comic']))); ?>
+      </h1>
+      <hr class="rule">
+    </div>
+  </section>
 
-					modal.style.display = "block";
-					modalImg.src = this.src;
-				}
+  <section class="section">
+    <div class="container">
 
-				var close = document.getElementById("close");
+      <div class="reader__controls">
+        <div class="reader__select-wrap">
+          <select id="volumeOption" class="reader__select"
+                  onchange="location = this.options[this.selectedIndex].value;">
+            <option value="">Volume / Chapter</option>
+            <?php Comics::vol_dropdown(); ?>
+          </select>
+        </div>
 
-				close.onclick = function() {
-					modal.style.display = "none";
-				}
-			}
+        <div class="reader__select-wrap">
+          <select id="pageOption" class="reader__select"
+                  onchange="displayImage(this);">
+            <option value="">Page</option>
+            <?php Comics::page_dropdown(); ?>
+          </select>
+        </div>
+      </div>
 
-			//Allows for an arrow click to change the comic page
-			window.addEventListener("keydown", function e (event) {
-				switch (event.key) {
+      <div class="reader__page-wrap" onclick="openModal()">
+        <?php if (isset($_GET['vol']) && !empty($_GET['vol'])): ?>
+          <img src="<?php echo htmlspecialchars($_SESSION['page']); ?>" id="cPage" class="reader__page" alt="Comic page">
+        <?php endif; ?>
+        <p class="reader__hint">← → arrow keys to turn pages &nbsp;·&nbsp; click image to zoom</p>
+      </div>
 
-					//Right Arrow					
-					case "ArrowRight":
+    </div>
+  </section>
 
-					//changes the drop down boxes index by +1
-						document.getElementById("pageOption").selectedIndex +=1;
-						var image = document.getElementById("cPage");
-						image.src = pageOption.value;
+  <!-- Fullscreen modal -->
+  <div id="readerModal" class="reader__modal">
+    <button class="reader__modal-close" onclick="closeModal()" aria-label="Close">&times;</button>
+    <img id="modalImg" class="reader__modal-img" alt="Comic page zoomed">
+  </div>
 
-					break;
-
-					//Left Arrow
-					case "ArrowLeft":
-
-					//Changes the drop down boxes index by -1
-					document.getElementById("pageOption").selectedIndex -=1;
-
-					//multiple declarations of var image was neccessary as it stores the current image only, otherwise the browser console would come back with the error "image is null".
-					var image = document.getElementById("cPage");
-					image.src= pageOption.value;
-					break;
-				}
-			}
-
-			,true)
-
-		</script>
-
-	</head>
-	
-	<body>
-
-		<?php include '../PHP/nav.php'; ?>
-
-		<div class="content_container">
-			
-			<div id="comicDropdown"> 
-				<center>
-					<select id = "volumeOption" onchange = "location = this.options[this.selectedIndex].value;">
-
-						<option value = "">Volume/Chapter</option>
-
-						<?php Comics::vol_dropdown(); ?>	
-
-					</select>
-
-					<select id= "pageOption" onchange="displayImage(this);" >
-
-						<option value="">Page</option>
-
-						<?php Comics::page_dropdown(); ?>
-
-					</select>
-				</center>
-			</div>
-
-		<div id="mWrapper" onclick="magnify()">
-			<center>
-
-				<?php
-					if (isset($_GET['vol']) && !empty($_GET['vol'])) {
-						echo "<img src='". $_SESSION['page'] . "' id='cPage'>";
-					}
-				?>
-				<p>You can also use the left and right arrow keys to go back and forth between pages</p>
-
-
-			<div id="iModal">
-				<div id="close">
-					&times;
-				</div>
-				
-				<img id="modalContent">
-			</div>
-
-			</center>
-
-	 	</div>
-	 </div>
-	</body>
+</body>
 </html>

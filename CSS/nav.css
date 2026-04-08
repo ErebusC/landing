@@ -1,28 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Muli:wght@500&display=swap');
 
-nav {
-	background-color: #353b48;
-	text-align: center;
-	color: white;
-	padding: 10px;
-	font-family: 'Muli', Arial, Helvetica, san-serif;
-	font-size: 20px;
-
-	-webkit-text-stroke-width: 0.2px;
-  	-webkit-text-stroke-color: #2f3640;
+.nav__logo {
+  display: none;
 }
 
-nav a {
-	text-decoration: none;
-	padding:10px 20px 10px 20px;
-	color: white;
-}
 
-nav a:visited {
-	color: white;
-}
 
-nav a:hover {
-	background-color: white;
-	color: #2f3640;
+.nav__tool-name span {
+  color: var(--accent);
 }
