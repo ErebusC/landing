@@ -1,0 +1,110 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Arial Black', Arial, sans-serif;
+}
+
+body {
+  background: #000;
+}
+
+.timetable-section {
+  position: relative;
+  background: url('your-background-image.jpg') center/cover no-repeat;
+  padding: clamp(30px, 5vw, 60px) 20px;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+}
+
+/* Container */
+
+.timetable-container {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(15px, 3vw, 40px);
+  max-width: 1200px;
+  margin: auto;
+  width: 80%;
+}
+
+/* Columns */
+
+.day-column {
+  display: grid;
+  grid-template-rows: auto repeat(3, 1fr);
+  gap: clamp(12px, 2vw, 20px);
+}
+
+/* Day Headers */
+
+.day-header {
+  background: #000;
+  color: #fff;
+  text-align: center;
+  padding: clamp(10px, 2vw, 20px);
+  font-size: clamp(16px, 2.5vw, 32px);
+  letter-spacing: 2px;
+  border: 3px solid #ff0000;
+}
+
+/* Cards */
+
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: clamp(12px, 2vw, 25px);
+  text-align: center;
+  border: 3px solid #fff;
+min-height: clamp(90px, 15vw, 170px);
+}}
+
+/* Text Scaling */
+
+.card .title {
+  font-size: clamp(12px, 1.8vw, 22px);
+  margin-bottom: 6px;
+  letter-spacing: 1px;
+}
+
+.card .subtitle {
+  font-size: clamp(11px, 1.6vw, 18px);
+  margin-bottom: 8px;
+}
+
+.card .time {
+  font-size: clamp(16px, 2.8vw, 32px);
+  font-weight: bold;
+  margin-top: 6px;
+}
+
+/* Color Variations */
+
+.white {
+  background: #ffffff;
+  color: #000;
+  border-color: #ff0000;
+}
+
+.red {
+  background: #e60000;
+  color: #000;
+}
+
+.black {
+  background: #000;
+  color: #fff;
+}
+
+.pink {
+  background: #ff00a8;
+  color: #fff;
+  border-color: #ff00a8;
+}
