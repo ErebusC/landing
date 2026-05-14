@@ -7,7 +7,8 @@
     <?php
       include '../PHP/comics.php';
       session_start();
-      $comic_name = Comics::validate_comic($_GET['comic']);
+      $comic_name = Comics::validate_comic($_GET['comic'] ?? '');
+      if ($comic_name === null) { header('Location: index.php'); exit; }
       echo htmlspecialchars(ucwords(preg_replace("(_)", " ", $comic_name))) . ' — Erebus';
     ?>
   </title>

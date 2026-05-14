@@ -138,14 +138,16 @@
 
        static function validate_comic($get) {
 
+            $get = basename($get); // strip any path traversal (e.g. ../../etc)
             $glob_in = Comics::glob_it(getcwd());
 
        		for ($i=0; $i < count($glob_in); $i++) {
-         		if(isset($get) == basename($glob_in[$i])) {
+         		if($get === basename($glob_in[$i])) {
 					$_SESSION['comic'] = $get;
 					return $_SESSION['comic'];
                 }
        		}
+            return null; // no match — caller must handle invalid input
         }
 
         //Dropdown function for different volumes
@@ -162,7 +164,7 @@
                     $address = "reader.php?comic=" . $_SESSION['comic'] . "&vol=" . $volume;
 
                     //Sets the selected value to the user selected volume
-                    if (isset($_GET['vol']) && $volume == $_GET['vol']){
+                    if (isset($_GET['vol']) && $volume == basename($_GET['vol'])){
                         echo "<option selected value= '" . $address . "'>" . $volume . "</option> \n";
 
                     }
@@ -173,7 +175,8 @@
         }
 
         static function page_dropdown(){
-            $pages = glob(getcwd() . "/" . $_SESSION['comic'] . '/' . $_GET['vol'] . "/*.{jpg,jpeg,png,webp}", GLOB_BRACE);
+            $vol = basename($_GET['vol'] ?? ''); // strip any path traversal
+            $pages = glob(getcwd() . "/" . $_SESSION['comic'] . '/' . $vol . "/*.{jpg,jpeg,png,webp}", GLOB_BRACE);
 
             $_SESSION['page'] = substr($pages[0],29);
 
