@@ -37,7 +37,7 @@
   <div class="container">
     <div class ="es-wrap">
     <div class="search-hero">
-      <p class="eyebrow">// search</p>
+      <p class="eyebrow">search</p>
       <h1 class="search-hero__heading">Let's google that</h1>
       <form class="search-hero__form" role="search" action="https://google.com/search?q=" method="get">
         <input
